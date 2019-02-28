@@ -14,8 +14,8 @@ def set_bit(n, x):
 
 # Hide file into LSB bits of an image
 def hide():
-        # Open the binary file
-        file_to_hide = raw_input("Enter path of file to hide:\n")
+	# Open the binary file
+	file_to_hide = raw_input("Enter path of file to hide:\n")
 	f = open(file_to_hide, "rb")
 	data = f.read()
 	f.close()
@@ -26,14 +26,12 @@ def hide():
 	cipher = AESCipher(password)
 	data = cipher.encrypt(data)
 	
-	
 	# Pack the file's length in first 4 bytes, then the rest of the file.
 	data = [ord(b) for b in struct.pack("i", len(data))] + [ord(b) for b in data]
 
 	# Transform data from file_to_hide binary file into an array of bits
 	data = np.array(data, dtype=np.uint8)
 	hidden_file = np.unpackbits(data).tolist()
-	
 	
 	# Append bits until multiple of 3
 	while(len(hidden_file)%3):
@@ -44,29 +42,29 @@ def hide():
 	
 	# Open large enough image to hide the file in
 	while(True):
-            img_file = raw_input("Enter image path or exit:\n")
-            if img_file == "exit":
-                print "\033[92m" +'Bye Bye'+ "\033[0m"
-                return
-            img = Image.open(img_file)
-            (width, height) = img.size
-            hide_space = width*height*3.0/(8.0*1024.0) # max file_to_hide size
-            print "\033[92m" +'Usable hiding space: {0} KB.'.format(round(hide_space,2))+ "\033[0m"
-            
-            if (hidden_file_size < hide_space - 4):
-                break
-            
-            print "\033[91m" +'File too large for this image!'+ "\033[0m" , "\033[92m" +'Select different image!'+ "\033[0m"
+		img_file = raw_input("Enter image path or exit:\n")
+		if img_file == "exit":
+			print "\033[92m" +'Bye Bye'+ "\033[0m"
+			return
+		img = Image.open(img_file)
+		(width, height) = img.size
+		hide_space = width*height*3.0/(8.0*1024.0) # max file_to_hide size
+		print "\033[92m" +'Usable hiding space: {0} KB.'.format(round(hide_space,2))+ "\033[0m"
 		
-        # Transform input image into RGB format
-        rgb_img = img.convert("RGBA").getdata()
+		if (hidden_file_size < hide_space - 4):
+			break
+		
+		print "\033[91m" +'File too large for this image!'+ "\033[0m" , "\033[92m" +'Select different image!'+ "\033[0m"
+	
+	# Transform input image into RGB format
+	rgb_img = img.convert("RGBA").getdata()
 		
 	# Create output image
 	output_img = Image.new('RGBA',(width, height))
 	data_img = output_img.getdata()
 
 	index = 0
-        # Iterate over all pixels of image and hide data
+    # Iterate over all pixels of image and hide data
 	for h in range(height):
 		for w in range(width):
 			(r, g, b, a) = rgb_img.getpixel((w, h))
@@ -77,7 +75,8 @@ def hide():
 				b = set_bit(b, hidden_file[index+2])
 			data_img.putpixel((w,h), (r, g, b, a))
 			index += 3
-        img_name = img_file.split('.', 1)[0]
+
+    img_name = img_file.split('.', 1)[0]
 	output_img.save(img_name + "-new.png", "PNG")
 	
 	print "\033[92m" +'{0} was hidden in {1}-new.png successfully!'.format(file_to_hide,img_name)+ "\033[0m"
@@ -99,8 +98,8 @@ def extract():
 			hidden_bits.append(b & 1)
 			
         
-        # Transform an array of bits into a binary file
-        data = np.array(hidden_bits, dtype=np.uint8)
+	# Transform an array of bits into a binary file
+	data = np.array(hidden_bits, dtype=np.uint8)
 	hidden_file = "".join(map(chr, np.packbits(data).tolist()))
 	hidden_file_size = struct.unpack("i", hidden_file[:4])[0]
 	hidden_file = hidden_file[4: hidden_file_size + 4]
@@ -129,7 +128,7 @@ def menu():
 	return choice
 
 def main():
-        choice = menu()
+    choice = menu()
 		
 	if choice == "1":		
 		hide()
