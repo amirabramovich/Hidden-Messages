@@ -76,7 +76,7 @@ def hide():
 			data_img.putpixel((w,h), (r, g, b, a))
 			index += 3
 
-    img_name = img_file.split('.', 1)[0]
+	img_name = img_file.split('.', 1)[0]
 	output_img.save(img_name + "-new.png", "PNG")
 	
 	print "\033[92m" +'{0} was hidden in {1}-new.png successfully!'.format(file_to_hide,img_name)+ "\033[0m"
@@ -128,8 +128,7 @@ def menu():
 	return choice
 
 def main():
-    choice = menu()
-		
+	choice = menu()	
 	if choice == "1":		
 		hide()
 	elif choice == "2":
